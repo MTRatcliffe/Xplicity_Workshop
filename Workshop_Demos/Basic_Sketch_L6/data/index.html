@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<head>
+  <!-- GNU Info
+        ================================================== 
+    This file is part of the Open Source ESP8266 Bases Valve controller.
+
+    Free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Open Source pH controller.  If not, see <http://www.gnu.org/licenses/>.
+
+Code and comments provided by Michael Ratcliffe in partnership with AquaponicsLAb.org 
+For More information see:
+http://MichaelRatcliffe.com
+http://AquaponicsLab.org
+
+ ================================================== -->
+
+
+  <!-- Basic Page Needs
+        ================================================== -->
+ 	<meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="icon" type="image/png" href="img/fish.png">
+        <title>AquaponicsLab</title>
+        <meta name="description" content="Michael Ratcliffe">
+        <meta name="keywords" content="Michael Ratcliffe">
+        <meta name="author" content="Michael Ratcliffe">
+
+
+
+<!-- Mobile Specific Metas
+        ================================================== -->
+	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+
+
+
+ <!-- Template CSS Files
+        ================================================== -->
+	<link rel='stylesheet' href='css/temp.css'>
+     
+
+ <!-- jQuery -->
+    <script src="js/JSFiles.js"></script>
+<!-- javascript
+================================================== -->
+
+
+<!-- This is the stuff for the nob inputs -->
+
+ <script type="text/javascript">
+      $(document).ready(function() {   
+
+      $('.knob').knob();
+      });
+    </script>
+  
+<!--
+
+       ==================================================
+        WebSockets Code [Lets us change variables]
+        ================================================== -->
+<script>
+var connection = new WebSocket('ws://'+location.hostname+':81/', ['arduino']);
+
+//Page Opened, tell esp to send readings data
+connection.onopen = function () { 
+ connection.send('Connect ' + new Date()); 
+ connection.send("#ConnectedReadings#");
+connection.send("#SendMeSomeData#"); //Ask The ESP To Send Some More Data
+};
+//Page Closed, Tell ESP t Stop Sending Data
+//connection.onclose = function () {  
+ //connection.send("#CLosedReadings#");
+//};
+
+connection.onerror = function (error) { 
+console.log('WebSocket Error ', error);
+};
+
+// Checking the Incming message for useful sensor informatin
+connection.onmessage = function(e) { 
+console.log('Server: ', e.data);
+		 
+			if(e.data.startsWith("#Time#")){
+			document.getElementById("time").placeholder = e.data.substring(6);
+			}
+			
+			 
+			if(e.data.startsWith("#S1#")){
+			document.getElementById("s1").value = e.data.substring(4);
+			}
+			if(e.data.startsWith("#S2#")){
+			document.getElementById("s2").value = e.data.substring(4);
+			}
+			if(e.data.startsWith("#S3#")){
+			document.getElementById("s3").value = e.data.substring(4);
+			}   
+
+ 
+}
+
+//Function to refresh data readings
+function UpdateData(){
+connection.send("#SendMeSomeData#"); //Ask The ESP To Send Some More Data 
+    };
+
+//Sending all Three SetPoints one after another
+function DeleetLogs(){
+    connection.send("#DeleetLog#"); 
+    ;     
+ 
+    };
+
+</script>
+
+
+<!--
+        ==================================================
+        Header Section Start
+        ================================================== -->
+</head>
+<body  style='background-color: #000;'>
+<div class='container'>
+<div class='row'>
+<div class='col-xs-12 col-md-12 col-lg-12' style='text-align: center;'>
+<h1><p class="text-warning"> Pico Greenhouse</p></h1>
+</div>
+</div>
+
+<!--
+        ==================================================
+        Second title Settings
+        ================================================== -->
+<div class='row'>
+<div class='col-md-12' style='text-align: center;'>
+<h2>
+</i> Real Time Readings </i>
+</h2>
+</div>
+</div>
+
+<!--
+        ==================================================
+        Main Image
+        ================================================== -->
+<div class="text-xs-center">
+<img class="img-responsive center-block" src="img/fish.png" alt="Michael Ratcliffe" height='300px' width='300px'> 
+</div>
+<!--
+
+
+<!--
+
+    ==================================================
+            Variables section foor Webosockets [where we change set points]
+            ================================================== -->
+
+<div class='col-md-12' style='text-align: center;'>
+
+
+
+<div class="container" >
+<!-- Button to refresh data readings, we only call the websockts function if this is called -->
+<div class='row'>
+<div class='col-md-12' style='text-align: center;'>
+<br/>
+<input type="button"  value="Refresh Readings" onclick="UpdateData();">  
+
+</div>
+</div>
+<form class="form-inline" role="form">
+    <div class="form-group" >
+      <div class="col-xs-3" >
+        <label for="time">Time:</label>
+        <input class="form-control" id="time" type="text" placeholder="Time">
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+
+
+<div class="row">
+
+
+       <div class="col-md-3 "> <center> <br/>
+	</div>
+
+            <div class="col-md-2 "> <center> <br/>
+		Air Temperature
+		<br/>
+              <input type="text" id="s1" class="input-small knob" value="41" data-min="-10" data-max="60" data-width="160" data-height="160" data-thickness=".2" data-fgColor="#4d4dff" data-displayPrevious="false" data-angleArc="250" data-angleOffset="-125" />
+<br/>
+[*C]
+<br/>
+            </div>
+            <div class="col-md-2"> <center> <br/>
+Humidity
+<br/>
+              <input type="text" id="s2" class="input-small knob" value="99" data-min="0" data-max="100" data-width="160" data-height="160" data-thickness=".2" data-fgColor="#4d4dff" data-displayPrevious="false" data-angleArc="250" data-angleOffset="-125" />
+<br/>
+
+[%]
+<br/>
+            </div>
+
+            <div class="col-md-2" > <center> <br/>
+		
+		VPD
+		<br/>
+              <input type="text" id="s3" class="input-small knob" value="1" data-min="0" data-max="10" data-width="160" data-height="160" data-thickness=".2" data-fgColor="#4d4dff" data-displayPrevious="false" data-angleArc="250" data-angleOffset="-125" />
+<br/>
+		
+		[kPa]
+<br/>
+		   </div>
+
+
+<br/>
+
+<div class='col-md-12' style='text-align: center;'>
+<br/>
+
+<a href='Log/data1.csv' type='button' target="_blank" class='btn btn-md' style='background-color: #000; frameborder=1; border-color:#656565;'>Dowload data </a>
+<input type="button"  value="Deleet Log File" onclick="DeleetLogs();">  
+<a href="img/VDP.jpg" type='button' target="_blank"  class='btn btn-md' style='background-color: #000; frameborder=1; border-color:#656565;'>VDP chart </a>
+
+
+</div>
+
+<!--
+    ============================
+            Closing Everything up
+            ================================== -->
+</div>
+</center>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</center>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

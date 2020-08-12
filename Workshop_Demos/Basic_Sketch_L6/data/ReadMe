@@ -1,0 +1,28 @@
+*  
+   <!-- GNU Info
+        ================================================== 
+    This file is part of the Open Source ESP8266 Basesed agricultural controllers
+
+    Free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Open Source pH controller.  If not, see <http://www.gnu.org/licenses/>.
+
+Code and comments provided by Michael Ratcliffe in partnership with AquaponicsLab.org 
+For More information see:
+http://AquaponicsLab.org
+http://MichaelRatcliffe.com
+
+ ================================================== -->
+
+*/
+
+Extra points for anyone in the workshop that points out my lack of useful info in this read me. 
